@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension FeedImage {
-	internal static func image(from remoteImage: RemoteFeedImage) -> FeedImage {
+internal extension FeedImage {
+	static func image(from remoteImage: RemoteFeedImage) -> FeedImage {
 		return FeedImage(id: remoteImage.id, description: remoteImage.description, location: remoteImage.location, url: remoteImage.url)
 	}
 }
