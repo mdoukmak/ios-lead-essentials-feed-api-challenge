@@ -69,11 +69,11 @@ public final class RemoteFeedLoader: FeedLoader {
 					completion(.failure(RemoteFeedLoader.Error.invalidData))
 					return
 				}
-				guard let _ = self.decoder.decode(data) else {
+				guard let items = self.decoder.decode(data) else {
 					completion(.failure(RemoteFeedLoader.Error.invalidData))
 					return
 				}
-				completion(.success([]))
+				completion(.success(items))
 			}
 		}
 	}
