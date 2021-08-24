@@ -10,8 +10,9 @@ import Foundation
 
 internal final class JSONFeedDecoder: FeedDecoder {
 	public func decode(_ data: Data) -> [FeedImage]? {
-		guard let remoteImages = try? JSONDecoder().decode(RemoteFeedResponsePayload.self, from: data).items else { print("Returning nil")
-			return nil }
+		guard let remoteImages = try? JSONDecoder().decode(RemoteFeedResponsePayload.self, from: data).items else {
+			return nil
+		}
 		return remoteImages.map {
 			FeedImage.image(from: $0)
 		}
