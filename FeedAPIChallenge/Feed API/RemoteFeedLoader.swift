@@ -4,42 +4,8 @@
 
 import Foundation
 
-private protocol FeedDecoder {
+internal protocol FeedDecoder {
 	func decode(_ data: Data) -> [FeedImage]?
-}
-
-internal struct RemoteFeedImage: Decodable {
-	let id: UUID
-	let description: String?
-	let location: String?
-	let url: URL
-
-	enum CodingKeys: String, CodingKey {
-		case id = "image_id"
-		case description = "image_desc"
-		case location = "image_loc"
-		case url = "image_url"
-	}
-}
-
-internal struct RemoteFeedResponsePayload: Decodable {
-	let items: [RemoteFeedImage]
-}
-
-extension FeedImage {
-	internal static func image(from remoteImage: RemoteFeedImage) -> FeedImage {
-		return FeedImage(id: remoteImage.id, description: remoteImage.description, location: remoteImage.location, url: remoteImage.url)
-	}
-}
-
-internal final class JSONFeedDecoder: FeedDecoder {
-	public func decode(_ data: Data) -> [FeedImage]? {
-		guard let remoteImages = try? JSONDecoder().decode(RemoteFeedResponsePayload.self, from: data).items else { print("Returning nil")
-			return nil }
-		return remoteImages.map {
-			FeedImage.image(from: $0)
-		}
-	}
 }
 
 public final class RemoteFeedLoader: FeedLoader {
