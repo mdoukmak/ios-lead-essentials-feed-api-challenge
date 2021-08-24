@@ -22,23 +22,23 @@ internal struct RemoteFeedImage: Decodable {
 	}
 }
 
+internal struct RemoteFeedResponsePayload: Decodable {
+	let items: [RemoteFeedImage]
+}
+
 extension FeedImage {
-	internal static func image(from remoteImage: RemoteFeedImage) -> FeedImage? {
+	internal static func image(from remoteImage: RemoteFeedImage) -> FeedImage {
 		return FeedImage(id: remoteImage.id, description: remoteImage.description, location: remoteImage.location, url: remoteImage.url)
 	}
 }
 
 internal final class JSONFeedDecoder: FeedDecoder {
 	public func decode(_ data: Data) -> [FeedImage]? {
-		var images = [FeedImage]()
-
-		let decoder = JSONDecoder()
-		let decodedImages = try? decoder.decode([RemoteFeedImage].self, from: data)
-		guard let remoteImages = decodedImages else { return nil }
-		images = remoteImages.compactMap {
+		guard let remoteImages = try? JSONDecoder().decode(RemoteFeedResponsePayload.self, from: data).items else { print("Returning nil")
+			return nil }
+		return remoteImages.map {
 			FeedImage.image(from: $0)
 		}
-		return images
 	}
 }
 
@@ -73,6 +73,7 @@ public final class RemoteFeedLoader: FeedLoader {
 					completion(.failure(RemoteFeedLoader.Error.invalidData))
 					return
 				}
+				completion(.success([]))
 			}
 		}
 	}
