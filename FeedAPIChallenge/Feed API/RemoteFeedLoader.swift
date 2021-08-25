@@ -29,14 +29,14 @@ public final class RemoteFeedLoader: FeedLoader {
 			guard let self = self else { return }
 			switch result {
 			case .failure:
-				completion(.failure(RemoteFeedLoader.Error.connectivity))
+				completion(.failure(.connectivity))
 			case .success(let (data, response)):
 				guard (response.statusCode == 200) else {
-					completion(.failure(RemoteFeedLoader.Error.invalidData))
+					completion(.failure(.invalidData))
 					return
 				}
 				guard let items = self.decoder.decode(data) else {
-					completion(.failure(RemoteFeedLoader.Error.invalidData))
+					completion(.failure(.invalidData))
 					return
 				}
 				completion(.success(items))
