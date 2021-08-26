@@ -8,6 +8,6 @@
 
 import Foundation
 
-internal struct RemoteFeedResponsePayload: Decodable {
+struct RemoteFeedResponsePayload: Decodable {
 	let items: [RemoteFeedImage]
 }

@@ -4,14 +4,9 @@
 
 import Foundation
 
-internal protocol FeedDecoder {
-	func decode(_ data: Data) -> [FeedImage]?
-}
-
 public final class RemoteFeedLoader: FeedLoader {
 	private let url: URL
 	private let client: HTTPClient
-	private let decoder: FeedDecoder
 
 	public enum Error: Swift.Error {
 		case connectivity
@@ -21,12 +16,11 @@ public final class RemoteFeedLoader: FeedLoader {
 	public init(url: URL, client: HTTPClient) {
 		self.url = url
 		self.client = client
-		self.decoder = JSONFeedDecoder()
 	}
 
 	public func load(completion: @escaping (FeedLoader.Result) -> Void) {
 		client.get(from: url) { [weak self] result in
-			guard let self = self else { return }
+			guard self != nil else { return }
 			switch result {
 			case .failure:
 				completion(.failure(Error.connectivity))
@@ -35,7 +29,7 @@ public final class RemoteFeedLoader: FeedLoader {
 					completion(.failure(Error.invalidData))
 					return
 				}
-				guard let items = self.decoder.decode(data) else {
+				guard let items = JSONFeedDecoder.decode(data) else {
 					completion(.failure(Error.invalidData))
 					return
 				}
